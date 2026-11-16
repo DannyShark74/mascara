@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: cmake --build build --target Mascara_VST3 Mascara_AU MascaraTest MascaraHostCheck -j 4
 
-      - name: Engine checks (synthetic voice: pitch, formant, quantize, robot, doubler, CPU)
+      - name: Engine checks on a synthetic voice (pitch, formant, quantize, robot, doubler, CPU)
         run: build/MascaraTest
 
       - name: Engine checks on real speech
