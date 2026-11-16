@@ -9,8 +9,14 @@ on:
 
 jobs:
   macos:
-    name: macOS plugin (VST3 + AU, universal) and installer
-    runs-on: macos-latest
+    # Two runner types: free macOS arm64 runners are sometimes not available for a long time.
+    # Both build the same universal (arm64 + x86_64) plugin; either result can be used.
+    name: macOS plugin (VST3 + AU, universal) and installer, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, macos-15-intel]
     permissions:
       contents: write
     timeout-minutes: 75
@@ -94,18 +100,18 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Mascara-installer
+          name: Mascara-installer-${{ matrix.os }}
           path: pkg/Mascara-${{ env.VERSION }}.pkg
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Mascara-macOS
+          name: Mascara-macOS-${{ matrix.os }}
           path: Mascara-macOS.zip
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: checks
+          name: checks-${{ matrix.os }}
           path: |
             editor.png
             pluginval-logs
@@ -117,14 +123,14 @@ jobs:
           set -e
           mkdir -p pub && cp "pkg/Mascara-$VERSION.pkg" pub/ && cp Mascara-macOS.zip pub/ && cp docs/INSTALL-mac.txt pub/
           cd pub
-          printf '# Máscara %s\n\nУстановщик: **Mascara-%s.pkg** (нажмите на файл, затем «Download raw file»).\nСборка из коммита %s.\n' "$VERSION" "$VERSION" "${GITHUB_SHA::7}" > README.md
+          printf '# Máscara %s\n\nУстановщик: **Mascara-%s.pkg** (нажмите на файл, затем «Download raw file»).\nСборка из коммита %s (%s).\n' "$VERSION" "$VERSION" "${GITHUB_SHA::7}" "${{ matrix.os }}" > README.md
           git init -q -b downloads
           git config user.name "Mascara CI"; git config user.email "ci@users.noreply.github.com"
           git add . && git commit -qm "Mascara $VERSION (${GITHUB_SHA::7})"
           git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" downloads
 
       - name: Attach to release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && matrix.os == 'macos-latest'
         uses: softprops/action-gh-release@v2
         with:
           files: |
