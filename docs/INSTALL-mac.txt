@@ -1,0 +1,23 @@
+Máscara — установка на Mac
+
+1. Откройте Mascara-<версия>.pkg.
+   Если macOS пишет «не удаётся проверить разработчика»: правый клик по файлу → «Открыть» → «Открыть».
+   (Или «Системные настройки» → «Конфиденциальность и безопасность» → «Всё равно открыть».)
+2. Нажимайте «Продолжить». Установщик сам положит:
+   VST3        → ~/Library/Audio/Plug-Ins/VST3/Mascara.vst3
+   Audio Unit  → ~/Library/Audio/Plug-Ins/Components/Mascara.component
+   Старая версия заменяется.
+3. Закройте FL Studio перед установкой. После неё: Options → Manage plugins → Find installed plugins.
+
+Robot по MIDI (необязательно)
+   В режиме ROBOT голос поёт одну ноту: по умолчанию это тоника из KEY (3-я октава) плюс ручка NOTE.
+   Чтобы вести ноту с клавиатуры в FL Studio, создайте канал MIDI Out с тем же портом,
+   что выставлен у Máscara (в окне обёртки плагина: шестерёнка → MIDI → Input port).
+
+Вручную (архив Mascara-macOS.zip)
+   Mascara.vst3       →  ~/Library/Audio/Plug-Ins/VST3/
+   Mascara.component  →  ~/Library/Audio/Plug-Ins/Components/
+   Папка ~/Library скрыта: в Finder нажмите Cmd+Shift+G и вставьте путь.
+   Затем в «Терминале»:
+   xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/Mascara.vst3
+   xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/Components/Mascara.component

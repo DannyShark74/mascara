@@ -1,0 +1,5 @@
+build/
+out/
+*.wav
+*.f32
+.DS_Store
